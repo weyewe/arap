@@ -8,6 +8,8 @@ class CreateStockAdjustmentDetails < ActiveRecord::Migration
       t.decimal :unit_price, :default => 0, :precision => 9, :scale => 2  
       t.boolean :is_deleted, :default => false 
       
+      t.boolean :is_confirmed, :default => false 
+      
       t.timestamps
     end
   end

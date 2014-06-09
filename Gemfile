@@ -24,6 +24,11 @@ gem 'jquery-rails'
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem 'turbolinks'
 
+
+gem 'thin'
+gem 'roadie' # for sending email 's css
+
+
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 1.2'
 
@@ -31,6 +36,31 @@ group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
 end
+
+
+gem 'devise'
+gem "kaminari"  
+gem 'uuidtools'
+# gem 'fastercsv', '~> 1.5.5'
+
+gem 'bootstrap-sass', '~> 2.3.1.0'
+gem 'the_role', '~> 2.0.0'
+gem 'protected_attributes'
+gem 'squeel', :git => "git://github.com/ernie/squeel.git"
+ 
+
+group :production do
+  gem 'rails_12factor'
+end
+
+# gem 'rails_log_stdout',           github: 'Heroku/rails_log_stdout'
+# gem 'rails3_serve_static_assets', github: 'Heroku/rails3_serve_static_assets'
+
+group :development, :test do
+  gem 'rspec-rails', '~> 2.0'
+  
+end
+
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
