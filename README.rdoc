@@ -1,28 +1,25 @@
-== README
+Steps:
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+General Utility:
+1. Contact   => schema Done 
 
-Things you may want to cover:
+StockManagement
+1. Item			=> schema Done 
+2. StockAdjustment 		=> schema Done 
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Operation
+1. PurchaseOrder
+2. PurchaseReceival
+3. PurchaseInvoice
+4. SalesOrder
+5. SalesReceival
+6. SalesInvoice
 
 
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+Finance and Accounting
+1. CashBank
+2. PaymentVoucher
+3. ReceiptVoucher
+4. Payable
+5. Receivable
+
