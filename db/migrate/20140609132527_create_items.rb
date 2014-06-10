@@ -11,6 +11,8 @@ class CreateItems < ActiveRecord::Migration
       
       t.decimal :avg_price , :default => 0, :precision => 9, :scale => 2 
       
+      t.boolean :is_deleted, :default => false 
+      
       t.timestamps
     end
   end

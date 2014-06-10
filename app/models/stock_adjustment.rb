@@ -46,16 +46,11 @@ class StockAdjustment < ActiveRecord::Base
     return true 
   end
   
-  def all_stock_adjustment_details_unconfirmable?
-    self.stock_adjustment_details.each do |x|
-      return  x.unconfirmable? if not x.unconfirmable?
-    end
-    
-    return true 
-  end
   
   
   def confirm_object( params )
+    return if self.is_deleted? 
+    
     if self.is_confirmed? 
       self.errors.add(:generic_errors, "Sudah konfirmasi")
       return self 
@@ -66,33 +61,42 @@ class StockAdjustment < ActiveRecord::Base
         self.errors.add(:confirmed_at, "Harus ada tanggal konfirmasi")
         return self
       end
+      
       self.is_confirmed = true 
       self.confirmed_at = params[:confirmed_at]
       self.save 
-      self.stock_adjustment_details.each {|x| x.confirm_object }
+      self.stock_adjustment_details.each {|x| x.confirm_object( params[:confirmed_at]) }
     else
       self.errors.add(:generic_errors, "Ada stock adjustment detail yang tidak bisa di konfirmasi")
       return self 
     end
   end
   
+  def all_stock_adjustment_details_unconfirmable?
+    self.stock_adjustment_details.each do |x|
+      return  x.unconfirmable? if not x.unconfirmable?
+    end
+    
+    return true 
+  end
+  
+  
   def unconfirm_object 
+    return if self.is_deleted?
+    
     if not self.is_confirmed? 
       self.errors.add(:generic_errors, "Belum konfirmasi")
       return self 
     end
     
     if self.all_stock_adjustment_details_unconfirmable?
-      if not params[:confirmed_at].present?
-        self.errors.add(:confirmed_at, "Harus ada tanggal konfirmasi")
-        return self
-      end
-      self.is_confirmed = true 
-      self.confirmed_at = params[:confirmed_at]
+      
+      self.is_confirmed = false 
+      self.confirmed_at = nil 
       self.save 
-      self.stock_adjustment_details.each {|x| x.confirm_object }
+      self.stock_adjustment_details.each {|x| x.unconfirm_object }
     else
-      self.errors.add(:generic_errors, "Ada stock adjustment detail yang tidak bisa di konfirmasi")
+      self.errors.add(:generic_errors, "Ada stock adjustment detail yang tidak bisa di batalkan ")
       return self 
     end
   end

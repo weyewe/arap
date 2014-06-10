@@ -7,12 +7,12 @@ class Item < ActiveRecord::Base
   def uniq_sku_in_active_objects
     total_duplicate_count = Item.where(:sku => self.sku, :is_deleted => false).count
     
-    if not self.persisted? and total_duplicate_count.count != 0 
+    if not self.persisted? and total_duplicate_count != 0 
       self.errors.add(:sku, "Harus unik")
       return self 
     end
     
-    if self.persisted? and total_duplicate_count.count > 1 
+    if self.persisted? and total_duplicate_count > 1 
       self.errors.add(:sku, "Harus unik")
       return self 
     end

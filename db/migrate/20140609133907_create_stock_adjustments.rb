@@ -8,6 +8,8 @@ class CreateStockAdjustments < ActiveRecord::Migration
       t.boolean :is_deleted, :default => false
       t.boolean :is_confirmed, :default => false 
       t.datetime :confirmed_at
+      
+    
       t.timestamps
     end
   end

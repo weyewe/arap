@@ -87,18 +87,7 @@ class StockAdjustmentDetail < ActiveRecord::Base
     end
   end
   
-  def unconfirmable?
-    return true if not self.is_confirmed?
-    # if the deletion doesn't change the quantity to be negative
-    self.quantity = -1 * self.quantity
-    self.non_negative_final_quantity
-    return false if self.errors.size != 0  
-    
-    self.non_negative_final_average_cost
-    return false if self.errors.size != 0
-    
-    return true 
-  end
+  
   
   def confirmable? 
     self.non_negative_final_quantity
@@ -116,9 +105,30 @@ class StockAdjustmentDetail < ActiveRecord::Base
     self.is_confirmed = true 
     self.confirmed_at = self.stock_adjustment.confirmed_at
     self.save 
-    stock_mutation = StockMutation.get_by_source_document_detail( self ) 
-    item.reverse_stock_mutation( stock_mutation )
-    stock_mutation.destroy  
+    
+    stock_mutation_case = STOCK_MUTATION_CASE[:addition] 
+    stock_mutation_case = STOCK_MUTATION_CASE[:deduction]  if self.quantity < 0 
+    
+    stock_mutation = StockMutation.create_object( 
+      self.item, # the item 
+      self, # source_document_detail 
+      stock_mutation_case, # stock_mutation_case,
+      STOCK_MUTATION_ITEM_CASE[:ready]   # stock_mutation_item_case
+     ) 
+    item.update_stock_mutation( stock_mutation )
+  end
+  
+  def unconfirmable?
+    return true if not self.is_confirmed?
+    # if the deletion doesn't change the quantity to be negative
+    self.quantity = -1 * self.quantity
+    self.non_negative_final_quantity
+    return false if self.errors.size != 0  
+    
+    self.non_negative_final_average_cost
+    return false if self.errors.size != 0
+    
+    return true 
   end
   
   def unconfirm_object
@@ -127,8 +137,10 @@ class StockAdjustmentDetail < ActiveRecord::Base
     self.is_confirmed = false 
     self.confirmed_at = nil 
     self.save 
-    stock_mutation = StockMutation.create_object( self ) 
-    item.update_stock_mutation( stock_mutation )
+    
+    stock_mutation = StockMutation.get_by_source_document_detail( self ) 
+    item.reverse_stock_mutation( stock_mutation )
+    stock_mutation.destroy 
   end
   
   def self.active_objects
