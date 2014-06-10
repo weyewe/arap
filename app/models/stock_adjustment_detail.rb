@@ -211,11 +211,11 @@ class StockAdjustmentDetail < ActiveRecord::Base
     self.confirmed_at = nil 
     self.save 
     
-    stock_mutation = StockMutation.get_by_source_document_detail( self ) 
+    stock_mutation = StockMutation.get_by_source_document_detail( self , STOCK_MUTATION_ITEM_CASE[:ready]) 
     item.reverse_stock_mutation( stock_mutation )
     stock_mutation.destroy 
     
-    price_mutation = PriceMutation.get_by_source_document_detail( self ) 
+    price_mutation = PriceMutation.get_by_source_document_detail( self  ) 
     revert_price_mutation  = price_mutation.delete_object 
     item.update_average_cost( price_mutation, -1*self.quantity )
   end

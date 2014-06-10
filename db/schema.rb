@@ -137,12 +137,15 @@ ActiveRecord::Schema.define(version: 20140610034523) do
     t.integer  "purchase_order_detail_id"
     t.integer  "quantity",                 default: 0
     t.integer  "invoiced_quantity",        default: 0
+    t.boolean  "is_confirmed",             default: false
+    t.datetime "confirmed_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "purchase_receivals", force: true do |t|
     t.integer  "purchase_order_id"
+    t.text     "description"
     t.datetime "receival_date"
     t.boolean  "is_confirmed",      default: false
     t.datetime "confirmed_at"

@@ -4,10 +4,11 @@ class StockMutation < ActiveRecord::Base
 =begin
 Utility
 =end
-  def self.get_by_source_document_detail( source_document_detail )
+  def self.get_by_source_document_detail( source_document_detail , item_mutation_case)
     self.where(
       :source_document_detail => source_document_detail.class.to_s,
-      :source_document_detail_id => source_document_detail.id 
+      :source_document_detail_id => source_document_detail.id ,
+      :item_case => item_mutation_case
     ).first
   end
   

@@ -8,6 +8,7 @@ class PurchaseOrderDetail < ActiveRecord::Base
   validate :non_zero_quantity
   validate :non_negative_unit_price
   validate :discount_within_limit
+  validate :unique_ordered_item 
   
   def non_zero_quantity
     return if not quantity.present? 
@@ -35,6 +36,31 @@ class PurchaseOrderDetail < ActiveRecord::Base
     if not ( discount >= lower_limit and discount <= upper_limit )
       self.errors.add(:discount, "Harus di antara 0 dan 100")
       return self 
+    end
+  end
+  
+  def unique_ordered_item
+    return if not item_id.present? 
+    
+    ordered_item_count  = PurchaseOrderDetail.where(
+      :item_id => item_id,
+      :purchase_order_id => purchase_order_id
+    ).count 
+    
+    ordered_item = PurchaseOrderDetail.where(
+      :item_id => item_id,
+      :purchase_order_id => purchase_order_id
+    ).first
+    
+    if self.persisted? and ordered_item.id != self.id   and ordered_item_count == 1
+      self.errors.add(:item_id, "Item harus uniq dalam 1 pemesanan")
+      return self 
+    end
+    
+    # there is item with such item_id in the database
+    if not self.persisted? and ordered_item_count != 0 
+      self.errors.add(:item_id, "Item harus uniq dalam 1 pemesanan")
+      return self
     end
   end
   
@@ -131,7 +157,7 @@ class PurchaseOrderDetail < ActiveRecord::Base
     self.confirmed_at = nil 
     self.save 
     
-    stock_mutation = StockMutation.get_by_source_document_detail( self ) 
+    stock_mutation = StockMutation.get_by_source_document_detail( self , STOCK_MUTATION_ITEM_CASE[:pending_receival] ) 
     item.reverse_stock_mutation( stock_mutation )
     stock_mutation.destroy 
     

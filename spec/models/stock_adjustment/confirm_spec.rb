@@ -70,7 +70,7 @@ describe StockAdjustmentDetail do
         stock_mutation_count_diff = @final_stock_mutation_count - @initial_stock_mutation_count
         stock_mutation_count_diff.should == 1  
         
-        stock_mutation = StockMutation.get_by_source_document_detail( @stock_adjustment_detail )
+        stock_mutation = StockMutation.get_by_source_document_detail( @stock_adjustment_detail , STOCK_MUTATION_ITEM_CASE[:ready])
         stock_mutation.should be_valid
         stock_mutation.quantity.should == @stock_adjustment_detail.quantity.abs
         

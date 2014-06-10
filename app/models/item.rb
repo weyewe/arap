@@ -66,22 +66,28 @@ class Item < ActiveRecord::Base
 StockMutation related
 =end
 
+  def update_quantity_according_to_item_case(stock_mutation_item_case, mutation_quantity)
+    if stock_mutation_item_case == STOCK_MUTATION_ITEM_CASE[:pending_receival]
+      self.pending_receival += mutation_quantity 
+    elsif  stock_mutation_item_case == STOCK_MUTATION_ITEM_CASE[:ready]
+      self.ready += mutation_quantity 
+    elsif  stock_mutation_item_case == STOCK_MUTATION_ITEM_CASE[:pending_delivery]
+      self.pending_delivery += mutation_quantity
+    end
+  
+    self.save 
+  end
+
+
   def reverse_stock_mutation(stock_mutation)
     multiplier = 1
     if stock_mutation.case == STOCK_MUTATION_CASE[:addition]
       multiplier = -1 
     end
     
-    if stock_mutation.item_case == STOCK_MUTATION_ITEM_CASE[:pending_receival]
-      self.pending_receival += multiplier * stock_mutation.quantity 
-    elsif  stock_mutation.item_case == STOCK_MUTATION_ITEM_CASE[:ready]
-      self.ready += multiplier * stock_mutation.quantity 
-    elsif  stock_mutation.item_case == STOCK_MUTATION_ITEM_CASE[:pending_delivery]
-      self.pending_delivery += multiplier * stock_mutation.quantity 
-    end
-    
-    self.save 
+    self.update_quantity_according_to_item_case( stock_mutation.item_case , multiplier * stock_mutation.quantity )
   end
+  
   
   def update_stock_mutation( stock_mutation ) 
     multiplier = 1
@@ -89,15 +95,7 @@ StockMutation related
       multiplier = -1 
     end
     
-    if stock_mutation.item_case == STOCK_MUTATION_ITEM_CASE[:pending_receival]
-      self.pending_receival += multiplier * stock_mutation.quantity 
-    elsif  stock_mutation.item_case == STOCK_MUTATION_ITEM_CASE[:ready]
-      self.ready += multiplier * stock_mutation.quantity 
-    elsif  stock_mutation.item_case == STOCK_MUTATION_ITEM_CASE[:pending_delivery]
-      self.pending_delivery += multiplier * stock_mutation.quantity 
-    end
-    
-    self.save
+    self.update_quantity_according_to_item_case( stock_mutation.item_case , multiplier * stock_mutation.quantity )
   end
   
   # always called after stock mutation  => update quantity performed  

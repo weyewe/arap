@@ -59,7 +59,7 @@ describe PurchaseOrder do
   end
   
   it "should generate stock mutation to adjust pending_receival" do
-    stock_mutation = StockMutation.get_by_source_document_detail(@po_detail) 
+    stock_mutation = StockMutation.get_by_source_document_detail(@po_detail, STOCK_MUTATION_ITEM_CASE[:pending_receival]) 
     stock_mutation.item_case.should == STOCK_MUTATION_ITEM_CASE[:pending_receival]
     stock_mutation.case.should == STOCK_MUTATION_CASE[:addition]
   end
@@ -74,8 +74,6 @@ describe PurchaseOrder do
       @item.reload 
     end
     
-   
-    
     it "should unconfirm both parent and details" do
       @po.is_confirmed.should be_false
       @po_detail.is_confirmed.should be_false
@@ -84,17 +82,12 @@ describe PurchaseOrder do
     
     it "should restore the item#pending_receival quantity" do
       item_pending_receival_diff = @item.pending_receival - @item_pending_receival
-    
       item_pending_receival_diff.should == -1*@quantity
     end
     
     it "should delete the stock mutation" do
-      StockMutation.get_by_source_document_detail(@po_detail).should be_nil 
+      StockMutation.get_by_source_document_detail(@po_detail, STOCK_MUTATION_ITEM_CASE[:pending_receival]).should be_nil 
     end
      
   end
-  
-  
-  
-  
 end

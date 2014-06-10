@@ -7,6 +7,9 @@ class CreatePurchaseReceivalDetails < ActiveRecord::Migration
       
       t.integer :invoiced_quantity , :default => 0 
       
+      t.boolean :is_confirmed, :default => false
+      t.datetime :confirmed_at
+      
       t.timestamps
     end
   end

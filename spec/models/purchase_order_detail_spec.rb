@@ -84,6 +84,20 @@ describe PurchaseOrderDetail do
       @po_detail.persisted?.should be_false
     end
     
+    it "should not allow double item ordered" do
+      @po_detail_2 = PurchaseOrderDetail.create_object(
+        :purchase_order_id  => @po.id       ,
+        :item_id            => @item.id     ,
+        :quantity           => @quantity   +3  ,
+        :discount           => 0  ,
+        :unit_price         => @unit_price
+      )
+      
+      @po_detail_2.errors.size.should_not ==0  
+    end
+    
+    
+    
     
   end
   

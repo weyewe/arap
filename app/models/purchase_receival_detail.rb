@@ -54,12 +54,12 @@ class PurchaseReceivalDetail < ActiveRecord::Base
   end
   
   def purchase_order_detail_come_from_the_same_purchase_order
-    return if not purchase_order_id.present?
+    return if not purchase_order_detail_id.present?
     
     parent_purchase_order_id = self.purchase_receival.purchase_order_id
     
-    if parent_purchase_order_id != self.purchase_order_id
-      self.errors.add(:purchase_order_id, "Harus berasal dari purchase order yang sama dengan penerimaan")
+    if parent_purchase_order_id != self.purchase_order_detail.purchase_order_id
+      self.errors.add(:purchase_order_detail_id, "Harus berasal dari purchase order yang sama dengan penerimaan")
       return self 
     end
   end
@@ -125,9 +125,16 @@ class PurchaseReceivalDetail < ActiveRecord::Base
       item, # the item 
       self, # source_document_detail 
       STOCK_MUTATION_CASE[:addition] , # stock_mutation_case,
-      STOCK_MUTATION_ITEM_CASE[:pending_receival]   # stock_mutation_item_case
+      STOCK_MUTATION_ITEM_CASE[:ready]   # stock_mutation_item_case
      ) 
-     
+    item.update_stock_mutation( stock_mutation )
+    
+    stock_mutation = StockMutation.create_object( 
+      item, # the item 
+      self, # source_document_detail 
+      STOCK_MUTATION_CASE[:deduction] , # stock_mutation_case,
+      STOCK_MUTATION_ITEM_CASE[:pending_receival]   # stock_mutation_item_case
+     )
     item.update_stock_mutation( stock_mutation )
   end
   
@@ -164,9 +171,15 @@ class PurchaseReceivalDetail < ActiveRecord::Base
     self.confirmed_at = nil 
     self.save 
     
-    stock_mutation = StockMutation.get_by_source_document_detail( self ) 
+    stock_mutation = StockMutation.get_by_source_document_detail( self, STOCK_MUTATION_ITEM_CASE[:ready] ) 
     item.reverse_stock_mutation( stock_mutation )
     stock_mutation.destroy 
+    
+    item.reload 
+    
+    stock_mutation = StockMutation.get_by_source_document_detail( self, STOCK_MUTATION_ITEM_CASE[:pending_receival] ) 
+    item.reverse_stock_mutation( stock_mutation )
+    stock_mutation.destroy
     
   end
 end

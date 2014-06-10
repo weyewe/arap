@@ -92,7 +92,7 @@ describe StockAdjustmentDetail do
     end
 
     it "should delete the stock mutation" do
-      StockMutation.get_by_source_document_detail(@stock_adjustment_detail).should be_nil 
+      StockMutation.get_by_source_document_detail(@stock_adjustment_detail, STOCK_MUTATION_ITEM_CASE[:ready]).should be_nil 
     end
     
     it "should update the average cost" do

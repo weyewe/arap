@@ -44,7 +44,7 @@ class PurchaseReceival < ActiveRecord::Base
       self.errors.add(:generic_errors, "sudah di konfirmasi")
       return self
     else
-      self.purchase_order_details.each {|x| x.delete_object}
+      self.purchase_receival_details.each {|x| x.delete_object}
       self.destroy 
     end
   end
