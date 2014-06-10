@@ -1,6 +1,7 @@
 class PurchaseOrderDetail < ActiveRecord::Base
   belongs_to :purchase_order 
   belongs_to :item 
+  has_many :purchase_receival_details
   
   validates_presence_of :quantity, :unit_price,:item_id,  :discount 
   
