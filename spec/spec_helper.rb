@@ -23,8 +23,10 @@ RSpec.configure do |config|
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
-  config.color_enabled = true
+  config.color  = true
   config.mock_with :rspec
+  config.infer_spec_type_from_file_location!
+  
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false

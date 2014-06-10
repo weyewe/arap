@@ -6,9 +6,9 @@ class CreateStockAdjustmentDetails < ActiveRecord::Migration
       t.integer :item_id
       t.integer :quantity 
       t.decimal :unit_price, :default => 0, :precision => 9, :scale => 2  
-      t.boolean :is_deleted, :default => false 
       
       t.boolean :is_confirmed, :default => false 
+      t.datetime :confirmed_at
       
       t.timestamps
     end

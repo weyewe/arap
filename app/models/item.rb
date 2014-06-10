@@ -1,4 +1,5 @@
 class Item < ActiveRecord::Base
+  has_many :price_mutations 
   
   validate :uniq_sku_in_active_objects
   validate :standard_price_is_not_less_than_zero
@@ -97,5 +98,22 @@ StockMutation related
     end
     
     self.save
+  end
+  
+  # always called after stock mutation  => update quantity performed  
+  def update_average_cost( price_mutation, diff_quantity ) 
+    if ready == 0
+      self.avg_cost = BigDecimal("0")
+      self.save 
+      return 
+    end
+    
+    old_quantity = ready - diff_quantity 
+    old_inventory = old_quantity * avg_cost 
+    additional_inventory = price_mutation.amount  
+    total_inventory = old_inventory + additional_inventory 
+    
+    self.avg_cost = ( total_inventory / (ready)  ) .round( 2 )
+    self.save 
   end
 end

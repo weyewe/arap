@@ -11,7 +11,7 @@ class StockAdjustment < ActiveRecord::Base
     return new_object 
   end
   
-  def update_object
+  def update_object(params )
     self.adjustment_date = params[:adjustment_date]
     self.description = params[:description]
     self.save 
@@ -50,6 +50,11 @@ class StockAdjustment < ActiveRecord::Base
   
   def confirm_object( params )
     return if self.is_deleted? 
+    
+    if self.stock_adjustment_details.count == 0 
+      self.errors.add(:generic_errors, "Belum ada detail")
+      return self
+    end
     
     if self.is_confirmed? 
       self.errors.add(:generic_errors, "Sudah konfirmasi")

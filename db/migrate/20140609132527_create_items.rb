@@ -9,7 +9,7 @@ class CreateItems < ActiveRecord::Migration
       t.integer :pending_delivery , :default => 0 
       t.decimal :standard_price, :default => 0, :precision => 9, :scale => 2  
       
-      t.decimal :avg_price , :default => 0, :precision => 9, :scale => 2 
+      t.decimal :avg_cost , :default => 0, :precision => 9, :scale => 2 
       
       t.boolean :is_deleted, :default => false 
       

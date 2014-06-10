@@ -16,10 +16,12 @@ Utility
     new_object = self.new 
     new_object.source_document_detail = source_document_detail.class.to_s
     new_object.source_document_detail_id = source_document_detail.id 
-    new_object.quantity = source_document_detail.quantity
+    new_object.quantity = source_document_detail.quantity.abs 
     new_object.case  = stock_mutation_case
     new_object.item_case = stock_mutation_item_case
     new_object.item_id = item.id
+    
+    new_object.mutation_date = source_document_detail.confirmed_at
     new_object.save 
     
     return new_object 

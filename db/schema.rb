@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140610011607) do
+ActiveRecord::Schema.define(version: 20140610034523) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -54,7 +54,7 @@ ActiveRecord::Schema.define(version: 20140610011607) do
     t.integer  "ready",                                    default: 0
     t.integer  "pending_delivery",                         default: 0
     t.decimal  "standard_price",   precision: 9, scale: 2, default: 0.0
-    t.decimal  "avg_price",        precision: 9, scale: 2, default: 0.0
+    t.decimal  "avg_cost",         precision: 9, scale: 2, default: 0.0
     t.boolean  "is_deleted",                               default: false
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -71,6 +71,18 @@ ActiveRecord::Schema.define(version: 20140610011607) do
   end
 
   create_table "payment_vouchers", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "price_mutations", force: true do |t|
+    t.decimal  "amount",                    precision: 9, scale: 2, default: 0.0
+    t.datetime "mutation_date"
+    t.integer  "item_id"
+    t.string   "source_document_detail"
+    t.integer  "source_document_detail_id"
+    t.integer  "case"
+    t.boolean  "is_deleted",                                        default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -98,10 +110,12 @@ ActiveRecord::Schema.define(version: 20140610011607) do
   create_table "purchase_order_details", force: true do |t|
     t.integer  "purchase_order_id"
     t.integer  "item_id"
-    t.decimal  "discount",          precision: 9, scale: 2, default: 0.0
+    t.decimal  "discount",          precision: 5, scale: 2, default: 0.0
     t.decimal  "unit_price",        precision: 9, scale: 2, default: 0.0
     t.integer  "quantity",                                  default: 0
-    t.integer  "received_quantity",                         default: 0
+    t.integer  "pending_receival",                          default: 0
+    t.boolean  "is_confirmed",                              default: false
+    t.datetime "confirmed_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -167,8 +181,8 @@ ActiveRecord::Schema.define(version: 20140610011607) do
     t.integer  "item_id"
     t.integer  "quantity"
     t.decimal  "unit_price",          precision: 9, scale: 2, default: 0.0
-    t.boolean  "is_deleted",                                  default: false
     t.boolean  "is_confirmed",                                default: false
+    t.datetime "confirmed_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -190,6 +204,7 @@ ActiveRecord::Schema.define(version: 20140610011607) do
     t.integer  "source_document_detail_id"
     t.string   "source_document_detail"
     t.integer  "item_case"
+    t.datetime "mutation_date"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

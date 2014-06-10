@@ -89,3 +89,8 @@ STOCK_MUTATION_ITEM_CASE = {
   :ready => 2, 
   :pending_delivery => 3 
 }
+
+PRICE_MUTATION_CASE = {
+  :new => 1,
+  :revert => 2 
+}

@@ -9,6 +9,8 @@ class CreateStockMutations < ActiveRecord::Migration
       
       t.integer :item_case  # STOCK_MUTATION_ITEM_CASE 
       
+      t.datetime :mutation_date 
+      
       t.timestamps
     end
   end
